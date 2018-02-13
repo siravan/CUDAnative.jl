@@ -14,7 +14,7 @@ import InteractiveUtils: _dump_function
 end
 
 # bug: default module activation segfaulted on NULL child function if cached=false
-params = Base.CodegenParams(cached=false)
+params = Base.CodegenParams()
 _dump_function(post17057_parent, Tuple{Ptr{Int64}},
                #=native=#false, #=wrapper=#false, #=strip=#false,
                #=dump_module=#true, #=syntax=#:att, #=optimize=#false,
