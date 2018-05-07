@@ -62,13 +62,11 @@ function irgen(@nospecialize(f), @nospecialize(tt))
     llvm_mod = LLVM.Module(llvm_mod_ref)
 
     # get the top-level function index
-    api = Ref{UInt8}(typemax(UInt8))
-    llvm_func_idx = Ref{UInt32}()
-    llvm_specfunc_idx = Ref{UInt32}()
+    llvm_func_idx = Ref{Int32}()
+    llvm_specfunc_idx = Ref{Int32}()
     ccall(:jl_get_function_id, Nothing,
-          (Ptr{Cvoid}, Ptr{Core.MethodInstance}, Ptr{UInt8}, Ptr{UInt32}, Ptr{UInt32}),
-          native_code, Ref(linfo), api, llvm_func_idx, llvm_specfunc_idx)
-    @assert api[] != typemax(api[])
+          (Ptr{Cvoid}, Ptr{Core.MethodInstance}, Ptr{Int32}, Ptr{Int32}),
+          native_code, Ref(linfo), llvm_func_idx, llvm_specfunc_idx)
 
     # get the top-level function
     llvm_func_ref = ccall(:jl_get_llvm_function, LLVM.API.LLVMValueRef,
