@@ -93,7 +93,7 @@ function irgen(@nospecialize(f), @nospecialize(tt))
     for llvm_func in functions(llvm_mod)
         # remove non-specsig functions
         fn = LLVM.name(llvm_func)
-        if startswith(fn, "jlcall_")
+        if startswith(fn, "jfptr_")
             unsafe_delete!(llvm_mod, llvm_func)
             continue
         end
