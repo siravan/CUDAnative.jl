@@ -56,6 +56,8 @@ end
 # main code generation functions
 #
 
+Cassette.@context GPUctx
+
 function module_setup(mod::LLVM.Module)
     triple!(mod, Int === Int64 ? "nvptx64-nvidia-cuda" : "nvptx-nvidia-cuda")
 
@@ -119,6 +121,16 @@ Base.showerror(io::IO, err::MethodSubstitutionWarning) =
     print(io, "You called $(err.original), maybe you intended to call $(err.substitute) instead?")
 
 function irgen(ctx::CompilerContext)
+    # patch the IR
+    overdubbed_f = let f=ctx.f
+        (args...) -> Cassette.overdub(GPUctx(), f, args...)
+    end
+    code_warntype(overdubbed_f, ctx.tt)
+    ctx = CompilerContext(
+        overdubbed_f, ctx.tt, ctx.cap, ctx.kernel;
+        inner_f=ctx.inner_f, alias=ctx.alias, minthreads=ctx.minthreads,
+        maxthreads=ctx.maxthreads, blocks_per_sm=ctx.blocks_per_sm, maxregs=ctx.maxregs)
+
     # get the method instance
     isa(ctx.f, Core.Builtin) && throw(CompilerError(ctx, "function is not a generic function"))
     world = typemax(UInt)
