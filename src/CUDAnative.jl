@@ -31,6 +31,7 @@ include(joinpath("device", "cuda_intrinsics.jl"))
 include(joinpath("device", "runtime_intrinsics.jl"))
 
 include("compiler.jl")
+include("context.jl")
 include("execution.jl")
 include("reflection.jl")
 
