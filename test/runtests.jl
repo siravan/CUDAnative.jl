@@ -5,13 +5,14 @@ using Test
 using Pkg
 if haskey(ENV, "GITLAB_CI")
   Pkg.add([PackageSpec(name = x; rev = "master")
-           for x in ["CUDAdrv", "LLVM", "CuArrays"]])
+           for x in ["CUDAdrv", "LLVM"]])
 end
 
 using CUDAnative, CUDAdrv
 import LLVM
 
 include("util.jl")
+include("array.jl")
 
 @testset "CUDAnative" begin
 
@@ -67,7 +68,7 @@ if CUDAnative.configured
             include("device/array.jl")
             include("device/cuda.jl")
 
-            #include("examples.jl")
+            include("examples.jl")
         end
     end
 else
