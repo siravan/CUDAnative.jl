@@ -507,7 +507,7 @@ script = """
     cpu = zeros(Int)
     gpu = CUDAdrv.Mem.alloc(CUDAdrv.Mem.Device, sizeof(cpu))
     @cuda kernel(convert(CUDAdrv.CuPtr{Int}, gpu), 1.2)
-    unsafe_copyto!(pointer(cpu), gpu, sizeof(Int))
+    CUDAdrv.Mem.copy!(pointer(cpu), gpu, sizeof(Int))
 """
 
 let (code, out, err) = julia_script(script, `-g0`)
